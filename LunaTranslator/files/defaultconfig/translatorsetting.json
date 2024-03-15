@@ -541,6 +541,7 @@
 			"Sakura部署教程": "https://github.com/SakuraLLM/Sakura-13B-Galgame/wiki",
 			"Github仓库": "https://github.com/SakuraLLM/Sakura-13B-Galgame",
             "端口号": 8080,
+			"api_key": "",
 			"API超时(秒)": 30,
             "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": false,
 			"附带上下文个数（必须打开利用上文翻译）": 3,

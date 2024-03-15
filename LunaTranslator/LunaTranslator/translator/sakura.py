@@ -41,6 +41,12 @@ class TS(basetrans):
         return api_url
         # OpenAI
         # self.client = OpenAI(api_key="114514", base_url=api_url)
+    def get_api_key(self, api_key):
+        if api_key == "":
+            return "Bearer no-key"
+        else:
+            return "Bearer {}".format(api_key)
+        
     def make_messages(self, query, history_ja=None, history_zh=None, **kwargs):
         messages = [
             {
@@ -89,7 +95,10 @@ class TS(basetrans):
                 extra_query=extra_query,
                 stream=False,
             )
-            output = self.session.post(self.api_url + "/chat/completions", timeout=self.timeout, json=data).json()
+            headers = dict(
+                Authorization=self.get_api_key(self.config['api_key']),
+            )
+            output = self.session.post(self.api_url + "/chat/completions", timeout=self.timeout, headers=headers, json=data).json()
             yield output
         except requests.Timeout as e:
             raise ValueError(f"连接到Sakura API超时：{self.api_url}，当前最大连接时间为: {self.timeout}，请尝试修改参数。")
@@ -118,8 +127,12 @@ class TS(basetrans):
                 seed=-1,
                 extra_query=extra_query,
                 stream=True,
+                Authorization=self.get_api_key(self.config['api_key']),
             )
-            output = self.session.post(self.api_url + "/chat/completions", timeout=self.timeout, json=data, stream=True)
+            headers = dict(
+                Authorization=self.get_api_key(self.config['api_key']),
+            )
+            output = self.session.post(self.api_url + "/chat/completions", timeout=self.timeout, headers=headers, json=data, stream=True)
             for o in output.iter_lines(delimiter="\n\n".encode()):
                 res = o.decode("utf-8").strip()[6:]#.replace("data: ", "")
                 print(res)
