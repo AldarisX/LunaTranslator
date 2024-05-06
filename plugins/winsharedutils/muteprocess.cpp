@@ -1,31 +1,24 @@
 
-
-#include <Audiopolicy.h>
-#include <iostream>
-#include<string> 
-#include <mmdeviceapi.h>
-#include <Psapi.h> 
-#include<Windows.h>
-#include <atlbase.h>
-#include"define.h"
-#pragma comment(lib, "Psapi.lib")
+#include "define.h"
 class CAudioMgr
 {
 public:
     CAudioMgr();
-    ~CAudioMgr(); 
+    ~CAudioMgr();
+
 public:
-    BOOL    SetProcessMute(DWORD Pid, bool mute);
-    bool    GetProcessMute(DWORD Pid);
+    BOOL SetProcessMute(DWORD Pid, bool mute);
+    bool GetProcessMute(DWORD Pid);
+
 private:
-    BOOL    __GetAudioSessionMgr2();
+    BOOL __GetAudioSessionMgr2();
+
 private:
-    HRESULT                 m_hRes;
-    IAudioSessionManager2* m_lpAudioSessionMgr;
+    HRESULT m_hRes;
+    IAudioSessionManager2 *m_lpAudioSessionMgr;
 };
 CAudioMgr::CAudioMgr()
-    : m_hRes(ERROR_SUCCESS)
-    , m_lpAudioSessionMgr(NULL)
+    : m_hRes(ERROR_SUCCESS), m_lpAudioSessionMgr(NULL)
 {
     ::CoInitialize(NULL);
 }
@@ -35,7 +28,8 @@ CAudioMgr::~CAudioMgr()
     ::CoUninitialize();
 }
 
-bool CAudioMgr::GetProcessMute(DWORD Pid) {
+bool CAudioMgr::GetProcessMute(DWORD Pid)
+{
     if (!this->__GetAudioSessionMgr2() || m_lpAudioSessionMgr == NULL)
     {
         return FALSE;
@@ -142,7 +136,6 @@ BOOL CAudioMgr::SetProcessMute(DWORD Pid, bool mute)
     return SUCCEEDED(m_hRes);
 }
 
-
 BOOL CAudioMgr::__GetAudioSessionMgr2()
 {
     if (m_lpAudioSessionMgr == NULL)
@@ -162,7 +155,7 @@ BOOL CAudioMgr::__GetAudioSessionMgr2()
             return FALSE;
         }
 
-        m_hRes = pDefaultDevice->Activate(__uuidof(IAudioSessionManager2), CLSCTX_ALL, NULL, (void**)&m_lpAudioSessionMgr);
+        m_hRes = pDefaultDevice->Activate(__uuidof(IAudioSessionManager2), CLSCTX_ALL, NULL, (void **)&m_lpAudioSessionMgr);
         if (FAILED(m_hRes) || (m_lpAudioSessionMgr == NULL))
         {
             return FALSE;
@@ -170,15 +163,16 @@ BOOL CAudioMgr::__GetAudioSessionMgr2()
     }
 
     return TRUE;
-} 
-
-
-BOOL SetProcessMute(DWORD Pid, bool mute) {
-	CAudioMgr AudioMgr;
-	return AudioMgr.SetProcessMute(Pid, mute);
 }
 
-bool GetProcessMute(DWORD Pid) {
-	CAudioMgr AudioMgr;
-	return AudioMgr.GetProcessMute(Pid);
+BOOL SetProcessMute(DWORD Pid, bool mute)
+{
+    CAudioMgr AudioMgr;
+    return AudioMgr.SetProcessMute(Pid, mute);
+}
+
+bool GetProcessMute(DWORD Pid)
+{
+    CAudioMgr AudioMgr;
+    return AudioMgr.GetProcessMute(Pid);
 }

@@ -8,30 +8,14 @@
 // This file is public domain software.
 
 #define _CRT_SECURE_NO_WARNINGS
-#include <windows.h>
-#include <windowsx.h>
-#include <commctrl.h>
-#include <commdlg.h>
-#include <mmsystem.h>
-#include <shlobj.h>
-#include <shlwapi.h>
-#include <mshtml.h>
-#include <string>
-#include <cctype>
-#include <cassert>
-#include <strsafe.h>
-#include <comdef.h>
-#include <mshtmcid.h>
-#include <process.h>
-#include "MWebBrowser.hpp" 
-  
+#include "MWebBrowser.hpp"
 
 BOOL GetIEVersion(LPWSTR pszVersion, DWORD cchVersionMax)
 {
     pszVersion[0] = 0;
     HKEY hKey = NULL;
     RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Internet Explorer", 0,
-        KEY_READ, &hKey);
+                  KEY_READ, &hKey);
     if (hKey)
     {
         DWORD cb = cchVersionMax * sizeof(WCHAR);
@@ -47,7 +31,8 @@ BOOL GetIEVersion(LPWSTR pszVersion, DWORD cchVersionMax)
 
     return FALSE;
 }
-static DWORD getemulation(){
+static DWORD getemulation()
+{
     DWORD m_emulation = 0;
     WCHAR szVersion[32];
     if (GetIEVersion(szVersion, ARRAYSIZE(szVersion)))
@@ -121,37 +106,55 @@ BOOL DoSetBrowserEmulation(DWORD dwValue)
 
     return bOK;
 }
-extern "C" __declspec(dllexport) void* html_new( HWND parent) {
-	DoSetBrowserEmulation(getemulation());
-	auto s_pWebBrowser = MWebBrowser::Create(parent);
+extern "C" __declspec(dllexport) void *html_new(HWND parent)
+{
+    DoSetBrowserEmulation(getemulation());
+    auto s_pWebBrowser = MWebBrowser::Create(parent);
     if (!s_pWebBrowser)
         return NULL;
- 
-        s_pWebBrowser->put_Silent(VARIANT_TRUE); 
- 
-        s_pWebBrowser->AllowInsecure(TRUE);
-    
-	return s_pWebBrowser;
+
+    s_pWebBrowser->put_Silent(VARIANT_TRUE);
+
+    s_pWebBrowser->AllowInsecure(TRUE);
+
+    return s_pWebBrowser;
 }
 
-extern "C" __declspec(dllexport) void html_navigate(void* web, wchar_t* path) {
-    if(!web)return;
-	auto ww =static_cast<MWebBrowser*>(web);
-	ww->Navigate2(path);
+extern "C" __declspec(dllexport) void html_navigate(void *web, wchar_t *path)
+{
+    if (!web)
+        return;
+    auto ww = static_cast<MWebBrowser *>(web);
+    ww->Navigate2(path);
 }
-extern "C" __declspec(dllexport) void html_resize(void* web,int x,int y,int w, int h) {
-    if(!web)return;
-	auto ww = static_cast<MWebBrowser*>(web);
-	RECT r;
-	r.left = x;
-	r.top = y;
-	r.right = x + w;
-	r.bottom = y + h; 
-	ww->MoveWindow(r);
+extern "C" __declspec(dllexport) void html_resize(void *web, int x, int y, int w, int h)
+{
+    if (!web)
+        return;
+    auto ww = static_cast<MWebBrowser *>(web);
+    RECT r;
+    r.left = x;
+    r.top = y;
+    r.right = x + w;
+    r.bottom = y + h;
+    ww->MoveWindow(r);
 }
-extern "C" __declspec(dllexport) void html_release(void* web) {
-    if(!web)return;
-    auto ww =  static_cast<MWebBrowser*>(web);
+extern "C" __declspec(dllexport) void html_release(void *web)
+{
+    if (!web)
+        return;
+    auto ww = static_cast<MWebBrowser *>(web);
     ww->Destroy();
-    //ww->Release(); Destroy减少引用计数，自动del
+    // ww->Release(); Destroy减少引用计数，自动del
+}
+
+extern "C" __declspec(dllexport) void html_get_current_url(void *web, wchar_t *url)
+{
+    if (!web)
+        return;
+    auto ww = static_cast<MWebBrowser *>(web);
+    ww->Destroy();
+    wchar_t *_u;
+    ww->get_LocationURL(&_u);
+    wcscpy(url, _u);
 }

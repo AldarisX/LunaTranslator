@@ -10,7 +10,9 @@
 
 > **A galgame translator**
 
-## <a href="http://hillya51.github.io/#/en/" target="_blank">Instructions</a> 
+## <a href="https://hillya51.github.io/LunaTranslator_tutorial/#/en/" target="_blank">Documentation</a> 
+
+Welcome friends who find it helpful to improve the documentation together.[Documentation Repo](https://github.com/HIllya51/LunaTranslator_tutorial)
 
 ## Function support
 
@@ -90,8 +92,4 @@ Support almost all translation engines you can think of, including:
  
 ## Support author
  
-If you feel that the software is helpful to you, you are welcome to scan WeChat code to sponsor. Thank you ~
-
-
-<img src='.\\LunaTranslator\\files\\zan.jpg' style="height: 400px !important;">
-
+If you feel that the software is helpful to you, welcome to become my [sponsor](https://patreon.com/HIllya51). Thank you ~ 
